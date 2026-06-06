@@ -112,6 +112,13 @@ func importTestRoms(cfg config.Config, repo *repository.GameRepository) error {
 // scanRoms walks data/roms/<platform>/ and registers any ROM file not already
 // in the database, deriving metadata from the filename.
 func scanRoms(cfg config.Config, repo *repository.GameRepository) error {
+	// Filenames owned by importTestRoms (curated metadata) — never re-register
+	// them here, or they'd duplicate the fixed-id rows.
+	testRomFiles := make(map[string]struct{}, len(testRoms))
+	for _, sg := range testRoms {
+		testRomFiles[sg.file] = struct{}{}
+	}
+
 	for platform, def := range platforms {
 		dir := filepath.Join(cfg.RomsDir(), platform)
 		entries, err := os.ReadDir(dir)
@@ -129,6 +136,9 @@ func scanRoms(cfg config.Config, repo *repository.GameRepository) error {
 			ext := strings.ToLower(filepath.Ext(entry.Name()))
 			if !contains(def.exts, ext) {
 				continue
+			}
+			if _, isTestRom := testRomFiles[entry.Name()]; isTestRom {
+				continue // owned by importTestRoms
 			}
 
 			romPath := filepath.Join(dir, entry.Name())
