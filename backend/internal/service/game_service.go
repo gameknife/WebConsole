@@ -8,6 +8,7 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -199,11 +200,14 @@ func toDTO(g model.Game) GameDTO {
 }
 
 // romURL derives the public ROM URL from the platform and stored ROM path.
+// The path separator is normalised first so a DB created on another OS (e.g. a
+// Windows data dir mounted into a Linux container) still yields a correct URL.
 func romURL(g model.Game) string {
 	if g.RomPath == "" {
 		return ""
 	}
-	return "/roms/" + g.Platform + "/" + filepath.Base(g.RomPath)
+	normalized := strings.ReplaceAll(g.RomPath, "\\", "/")
+	return "/roms/" + g.Platform + "/" + path.Base(normalized)
 }
 
 // parseTags decodes the JSON-array tag string into a slice, tolerating empties.

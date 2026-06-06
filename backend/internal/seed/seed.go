@@ -7,6 +7,7 @@ package seed
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -68,16 +69,17 @@ func importTestRoms(cfg config.Config, repo *repository.GameRepository) error {
 	}
 
 	for _, sg := range testRoms {
-		src := filepath.Join(cfg.TestRomsDir, sg.file)
-		dest := filepath.Join(destDir, sg.file)
-
-		exists, err := repo.ExistsByRomPath(dest)
-		if err != nil {
+		// Dedup by primary key (ID): idempotent across restarts and resilient to
+		// a pre-existing DB whose stored rom_path uses a different OS separator
+		// (e.g. a Windows-created data dir mounted into a Linux container).
+		if _, err := repo.Get(sg.id); err == nil {
+			continue
+		} else if !errors.Is(err, repository.ErrNotFound) {
 			return err
 		}
-		if exists {
-			continue
-		}
+
+		src := filepath.Join(cfg.TestRomsDir, sg.file)
+		dest := filepath.Join(destDir, sg.file)
 
 		size, err := copyFile(src, dest)
 		if err != nil {
@@ -130,12 +132,15 @@ func scanRoms(cfg config.Config, repo *repository.GameRepository) error {
 			}
 
 			romPath := filepath.Join(dir, entry.Name())
-			exists, err := repo.ExistsByRomPath(romPath)
-			if err != nil {
-				return err
-			}
-			if exists {
+
+			// Stable id from platform + filename (NOT the absolute path), so the
+			// same ROM keeps one id across OSes / data dirs and re-scans dedup
+			// by primary key — no duplicates when an existing DB is reused.
+			id := platform + "-" + shortHash(platform+"/"+entry.Name())
+			if _, err := repo.Get(id); err == nil {
 				continue
+			} else if !errors.Is(err, repository.ErrNotFound) {
+				return err
 			}
 
 			info, err := entry.Info()
@@ -145,7 +150,7 @@ func scanRoms(cfg config.Config, repo *repository.GameRepository) error {
 			name := strings.TrimSuffix(entry.Name(), filepath.Ext(entry.Name()))
 			now := time.Now()
 			g := &model.Game{
-				ID:        platform + "-" + shortHash(romPath),
+				ID:        id,
 				Name:      name,
 				NameCn:    name,
 				Platform:  platform,
