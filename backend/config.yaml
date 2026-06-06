@@ -1,0 +1,18 @@
+# WebConsole backend configuration.
+# All paths are resolved relative to the process working directory unless absolute.
+
+# HTTP listen address.
+addr: ":8080"
+
+# Runtime data directory: holds roms/, covers/, saves/ and webconsole.db.
+dataDir: "../data"
+
+# Directory containing the bundled NESDev test ROMs used to seed the demo library.
+testRomsDir: "../test-roms"
+
+# EmulatorJS engine data path handed to the frontend via /api/v1/config.
+# MVP uses the official CDN; self-hosted deployments point this at /emulatorjs/data/.
+emulatorjsDataPath: "https://cdn.emulatorjs.org/stable/data/"
+
+# Gin mode: "debug" or "release".
+ginMode: "debug"

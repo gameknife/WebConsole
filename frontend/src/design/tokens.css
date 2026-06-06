@@ -1,0 +1,36 @@
+/*
+ * WebConsole design tokens — a high-fidelity *approximation* of the SteamOS /
+ * Deck Big Picture design system. These are original near-values, NOT Valve's
+ * actual numbers, and intentionally avoid any Valve trademarks or assets.
+ *
+ * Dark blue-grey base + translucent glass panels + blue focus highlight.
+ */
+:root {
+  /* Surfaces */
+  --bg-0: #0e1419;
+  --bg-1: #171d25;
+  --bg-2: #1f2730;
+  --panel: rgba(31, 39, 48, 0.72);
+
+  /* Text */
+  --text-0: #eef3f8;
+  --text-1: #aebacc;
+  --text-dim: #6b7785;
+
+  /* Accent (focus / selection) */
+  --accent: #4ba7ff;
+  --accent-strong: #1a9fff;
+
+  /* Focus glow: inner ring + outer bloom */
+  --focus-glow: 0 0 0 3px rgba(75, 167, 255, 0.9), 0 8px 30px rgba(75, 167, 255, 0.35);
+
+  /* Geometry */
+  --radius: 14px;
+  --radius-lg: 22px;
+  --blur: 18px;
+
+  /* Shelf / tile metrics */
+  --shelf-gap: 18px;
+  --tile-w: 200px;
+  --tile-ratio: 3 / 4;
+}

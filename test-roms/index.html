@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NES 本地测试 - EmulatorJS</title>
+  <style>
+    body { margin: 0; background: #0f172a; color: #e2e8f0; font-family: system-ui, sans-serif; }
+    header { padding: 12px 16px; display: flex; gap: 12px; align-items: center; }
+    select { padding: 6px 10px; font-size: 14px; }
+    #game { width: 100%; max-width: 720px; aspect-ratio: 4/3; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <header>
+    <label>选择 ROM：</label>
+    <select id="rom" onchange="location.search='?rom='+encodeURIComponent(this.value)">
+      <option value="nestest.nes">nestest.nes (CPU 测试)</option>
+      <option value="01-basics.nes">01-basics.nes (指令测试)</option>
+      <option value="cpu_dummy_reads.nes">cpu_dummy_reads.nes</option>
+      <option value="palette.nes">palette.nes (调色板)</option>
+    </select>
+  </header>
+  <div id="game"></div>
+
+  <script>
+    // 与 game.52python.cn 同样的 EmulatorJS 接入方式
+    const params = new URLSearchParams(location.search);
+    const rom = params.get('rom') || 'nestest.nes';
+    document.getElementById('rom').value = rom;
+
+    EJS_player = '#game';
+    EJS_core = 'nes';                                   // libretro NES core
+    EJS_gameUrl = './' + rom;                           // 本地 ROM
+    EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';  // 引擎数据走官方 CDN
+    EJS_startOnLoaded = true;
+  </script>
+  <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+</body>
+</html>

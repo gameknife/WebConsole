@@ -1,0 +1,91 @@
+@import './../design/tokens.css';
+
+/* Inter from a font CDN as an open replacement for Valve's proprietary font. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1200px 800px at 70% -10%, rgba(75, 167, 255, 0.08), transparent 60%),
+      var(--bg-0);
+    color: var(--text-0);
+    font-family: 'Inter', 'Fira Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden; /* the app manages its own scroll regions */
+  }
+
+  /* Hide the OS focus outline; focus is expressed via the glow token instead. */
+  :focus {
+    outline: none;
+  }
+}
+
+@layer components {
+  /* Frosted-glass panel surface. */
+  .glass {
+    background: var(--panel);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Form input used in edit dialogs. */
+  .input {
+    width: 100%;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 0.7rem;
+    color: var(--text-0);
+    font-size: 0.875rem;
+  }
+  .input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(75, 167, 255, 0.4);
+  }
+
+  /* Shimmering skeleton placeholder. */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      100deg,
+      var(--bg-1) 30%,
+      var(--bg-2) 50%,
+      var(--bg-1) 70%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-sweep 1.3s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-sweep {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Thin, dark scrollbars that fit the dark theme. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
