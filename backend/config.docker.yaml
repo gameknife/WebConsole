@@ -1,6 +1,6 @@
 # Container configuration. Mount a volume at /data to persist the library,
 # ROMs, covers, saves and the SQLite database.
-addr: ":8080"
+addr: ":60174"
 dataDir: "/data"
 testRomsDir: "/test-roms"
 emulatorjsDataPath: "https://cdn.emulatorjs.org/stable/data/"
